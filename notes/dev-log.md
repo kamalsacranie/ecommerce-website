@@ -27,4 +27,8 @@
 
 1. We installed `djangorestframework` and added it to the list of installed apps in our `settings.py`.
 2. We then set up our api by adding the `@api_view()` decorator to our function views. We also used the `rest_framework.response.Response` object to allow us to use all the rest framework functionality.
-3. 
+
+## Linking front and back
+
+1. We `npm install axios` which allows us to make requests to our API
+2. We also had to install `corsheaders` for django so that we could allow our frontend to request API data
