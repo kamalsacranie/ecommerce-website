@@ -14,3 +14,17 @@
 1. We then `npm install react-boostrap` which is bascially bootstrap that react can use and then went onto bootswatch.com and downloaded some nice bootstrap css and put that in the public folder
 2. Then we import the bootstrap things into the js files with `import { <components> } from 'react-bootstrap'`
 3. We went to cdnjs.com and added the rel link for font awesome to our index.html which allows us to use cool icons in our text by using the class attribute in the tags
+
+1. We then just fleshed out our home page by making components etc and I made a star component to do the ratings quite nicely.
+
+## React routing
+
+1. We setup rect routing using `npm install react-router-dom react-router-bootstrap` which allows us to import `BrowserRouter` and `Route`
+2. This lets us wrap our html in `App.js` in `<BrowserRouter>` tags and then use `<Route>` tags to point to components to render
+3. We then "reactified" our anchor tags using react Link tags
+
+## Django rest framework
+
+1. We installed `djangorestframework` and added it to the list of installed apps in our `settings.py`.
+2. We then set up our api by adding the `@api_view()` decorator to our function views. We also used the `rest_framework.response.Response` object to allow us to use all the rest framework functionality.
+3. 
