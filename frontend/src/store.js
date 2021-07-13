@@ -5,12 +5,13 @@ import {
 } from 'redux';
 
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { productListReducer } from './reducers/productReducers'
+import { productListReducer, productDetialsReducer } from './reducers/productReducers'
 import thunk from 'redux-thunk';
 
 
 const reducer = combineReducers({
     productList: productListReducer,
+    productDetails: productDetialsReducer,
 });
 
 const initialState = {};
