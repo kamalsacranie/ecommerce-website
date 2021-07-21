@@ -16,7 +16,7 @@ export function LoginScreen({ location, history }) {
 
     const dispatch = useDispatch()
 
-    const redirect = location.search ? location.serach.split('=')[1] : '/'
+    const redirect = location.search ? location.search.split('=')[1] : '/'
 
     const userLogin =  useSelector(state => state.userLogin) // This is us getting the userLogin from our stile which is stored in store.js
     const { loading, error, userInfo } = userLogin
@@ -52,8 +52,8 @@ export function LoginScreen({ location, history }) {
                 <Form.Group controlId='password'>
                     <Form.Label>Password</Form.Label>
                     <Form.Control
-                        type='passowrd'
-                        placeholder='Enter Passowrd'
+                        type='password'
+                        placeholder='Enter Password'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     ></Form.Control>
@@ -66,7 +66,7 @@ export function LoginScreen({ location, history }) {
 
             <Row className='py-3'>
                 <Col>
-                    New Customer? <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Register</Link>
+                    New Customer? <Link to={redirect ? `/register?redirect=${redirect}` : '/'}>Register</Link>
                 </Col>
             </Row>
         </FormContainer>

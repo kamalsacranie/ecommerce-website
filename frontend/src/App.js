@@ -10,6 +10,7 @@ import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 function App() {
   return (
@@ -17,8 +18,13 @@ function App() {
       <Header />
       <main className="py-3">
         <Container>
+
+          {/* Was confused about how we could just pass ?=redirect/ in the url but it's because anything after the
+          questionmark is considered a url parameter and doesnt impact the rout*/}
+
           <Route path='/' component={HomeScreen} exact />
-          <Route path='/login' component={LoginScreen} exact />
+          <Route path='/login' component={LoginScreen} />
+          <Route path='/register' component={RegisterScreen} />
         {/* Adding :id here in the path makes it dynamic. not sure how this bit works */}
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />  {/* Putting questionmark after id makes it optional meaning we can just go to /cart */}
