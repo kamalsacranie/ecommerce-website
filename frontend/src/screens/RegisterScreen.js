@@ -18,7 +18,7 @@ function RegisterScreen({ location, history}) {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [message, setMessage] = useState('')
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch() // thing dispatch is like. you dispatch the new info to your state
 
     const redirect = location.search ? location.search.split('=')[1] : '/'
 
@@ -32,6 +32,8 @@ function RegisterScreen({ location, history}) {
     }, [history, userInfo, redirect])
 
     const submitHandler = (e) => {
+        e.preventDefault() // This is the MOFO that stops the page from auto reloading for somereason ffs. Took so long to find
+
         if (password != confirmPassword) {
             setMessage('Passwords do not match')
         } else {
