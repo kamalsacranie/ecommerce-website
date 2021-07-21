@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import HomeScreen from './screens/HomeScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
+import LoginScreen from './screens/LoginScreen';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <main className="py-3">
         <Container>
           <Route path='/' component={HomeScreen} exact />
+          <Route path='/login' component={LoginScreen} exact />
         {/* Adding :id here in the path makes it dynamic. not sure how this bit works */}
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />  {/* Putting questionmark after id makes it optional meaning we can just go to /cart */}
