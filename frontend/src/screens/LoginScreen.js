@@ -35,6 +35,8 @@ export function LoginScreen({ location, history }) {
     return (
         <FormContainer>
             <h1>Sign In</h1>
+            {error && <Message variant='danger'>{error}</Message>}
+            {loading && <Loader />}
 
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='email'>
