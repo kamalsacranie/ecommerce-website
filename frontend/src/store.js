@@ -5,8 +5,11 @@ import {
   productListReducer,
   productDetialsReducer,
 } from "./reducers/productReducers";
-import { userLoginReducer } from "./reducers/userReducer";
-import { userRegisterReducer } from "./reducers/userReducer";
+import {
+  userLoginReducer, 
+  userRegisterReducer,
+  userDetailsReducer,
+} from "./reducers/userReducer";
 import { cartReducer } from "./reducers/cartReducers";
 import thunk from "redux-thunk";
 
@@ -16,6 +19,7 @@ const reducer = combineReducers({
   cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
+  userDetails: userDetailsReducer,
 });
 
 const cartItemsFromStorage = localStorage.getItem("cartItems")
