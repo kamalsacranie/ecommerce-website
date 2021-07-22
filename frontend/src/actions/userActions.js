@@ -98,6 +98,7 @@ export const register = (name, email, password) => async (dispatch) => {
 };
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
+
   try {
     dispatch({
       type: USER_DETAILS_REQUEST,
@@ -107,6 +108,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
       userLogin: { userInfo }
      } = getState()
 
+     console.log(userInfo)
     const config = {
       headers: {
         "Content-type": "application/json",

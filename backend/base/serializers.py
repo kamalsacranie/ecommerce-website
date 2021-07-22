@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['_id', 'username', 'email', 'name'] # returning all info for our Product model
+        fields = ['_id', 'username', 'email', 'name', 'is_admin'] # returning all info for our Product model
 
     # We HAVE to use the keyword get according to the docs we can then display it in the class meta
     def get_name(self, obj):
