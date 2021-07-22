@@ -33,6 +33,8 @@ function RegisterScreen({ location, history}) {
 
     const submitHandler = (e) => {
         e.preventDefault() // This is the MOFO that stops the page from auto reloading for somereason ffs. Took so long to find
+        // great resource [here](https://www.robinwieruch.de/react-preventdefault) about preventDefault(): TLDR it makes it so
+        // The page doesnt refresh
 
         if (password != confirmPassword) {
             setMessage('Passwords do not match')
