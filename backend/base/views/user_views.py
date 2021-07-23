@@ -59,7 +59,7 @@ def update_user_profile(request):
 
     data = request.data
     user.first_name = data['name']
-    user.username = data['username']
+    user.username = data['email']
     user.email = data['email']
 
     if data['password'] != '':

@@ -9,6 +9,11 @@ import {
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
   USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_DETAILS_RESET,
 } from "../constants/userConstants";
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:8000";
@@ -51,6 +56,7 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
   dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET });
 };
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -129,6 +135,55 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    });
+
+    const { 
+      userLogin: { userInfo } // here, along with the other ones, because we need to be logged in
+      // we get our userInfo from our state using getState because we have a state called user info
+      // Which contains login etc. We destructure the return value from the getState function.
+     } = getState()
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}` // grabbing our token from userInfo and allowing us to authorise
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/users/profile/update/`,
+      user,
+      config,
+    );
+
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
+
+    dispatch({
+      type: USER_LOGIN_SUCCESS, // 'dispathcing' i.e. triggering to login once the profile update is done
+      payload: data,
+    });
+
+    localStorage.setItem("userInfo", JSON.stringify(data)); //updating our local storage
+
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
-import { getUserDetails } from '../actions/userActions'
+import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 
 function ProfileScreen({ history }) {
     
@@ -14,6 +15,7 @@ function ProfileScreen({ history }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [warnMessage, setWarnMessage] = useState('')
     const [message, setMessage] = useState('')
 
     const dispatch = useDispatch() // thing dispatch is like. you dispatch the new info to your state
@@ -23,19 +25,23 @@ function ProfileScreen({ history }) {
 
     const userLogin = useSelector(state => state.userLogin) // This is us getting the userLogin from our stile which is stored in store.js
     const { userInfo } = userLogin
+
+    const userUpdateProfile = useSelector(state => state.userUpdateProfile)
+    const { success } = userUpdateProfile
     
     useEffect(() => {
         if(!userInfo) {
             history.push('/login')
         } else {
-            if (!user || !user.name) {
+            if (!user || !user.name || success) {
+                dispatch({ type: USER_UPDATE_PROFILE_RESET }) // updating this part of our state
                 dispatch(getUserDetails('profile'))
             } else {
                 setName(user.name)
                 setEmail(user.email)
             }
         }
-    }, [history, userInfo, user, dispatch])
+    }, [history, userInfo, user, dispatch, success])
 
     const submitHandler = (e) => {
         e.preventDefault() // This is the MOFO that stops the page from auto reloading for somereason ffs. Took so long to find
@@ -43,9 +49,17 @@ function ProfileScreen({ history }) {
         // The page doesnt refresh
 
         if (password != confirmPassword) {
-            setMessage('Passwords do not match')
+            setWarnMessage('Passwords do not match')
+            setMessage('')
         } else {
-            console.log('Updating...')
+            dispatch(updateUserProfile({
+                'id': user._id,
+                'name': name,
+                'email': email,
+                'password': password,
+            }))
+            setMessage('Details updated!')
+            setWarnMessage('')
         }
     }
 
@@ -53,7 +67,8 @@ function ProfileScreen({ history }) {
         <Row>
             <Col md={3}>
                 <h2>User Profile</h2>
-                {message && <Message variant='danger'>{message}</Message>}
+                {warnMessage && <Message variant='danger'>{warnMessage}</Message>}
+                {message && <Message variant='success'>{message}</Message>}
                 {error && <Message variant='danger'>{error}</Message>}
                 {loading && <Loader />}
 
