@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Product
+from .models import Product, Order, OrderItem, ShippingAddress
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -53,3 +53,42 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__' # returning all info for our Product model
+
+class ShippingAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingAddress
+        fields = '__all__' # returning all info for our Product model
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__' # returning all info for our Product model
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    orders = serializers.SerializerMethodField(read_only=True)
+    shipping_address = serializers.SerializerMethodField(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = '__all__' # returning all info for our Product model
+
+    def get_orders(self, obj):
+        items = obj.orderitem_set.all() # could be place for errors
+        serializer = OrderItemSerializer(items, many=True)
+        return serializer.data
+
+    def get_shipping_address(self, obj):
+        try:
+            address = ShippingAddressSerializer(obj.shipping_address, many=False)
+        except:
+            address = False
+        return address
+
+    def get_user(self, obj):
+        user = obj.user
+        serializer = UserSerializer(user, many=False)
+        return serializer
+
+    # Good explanation for all this in 5. Order View & URL at 19:30
