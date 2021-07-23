@@ -13,7 +13,6 @@ import {
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
-  USER_DETAILS_RESET,
 } from "../constants/userConstants";
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:8000";
