@@ -66,7 +66,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
 
-    orders = serializers.SerializerMethodField(read_only=True)
+    order_items = serializers.SerializerMethodField(read_only=True)
     shipping_address = serializers.SerializerMethodField(read_only=True)
     user = serializers.SerializerMethodField(read_only=True)
 
@@ -74,9 +74,9 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = '__all__' # returning all info for our Product model
 
-    def get_orders(self, obj):
-        items = obj.orderitem_set.all() # could be place for errors
-        serializer = OrderItemSerializer(items, many=True)
+    def get_order_items(self, obj):
+        order_items = obj.orderitem_set.all() # could be place for errors
+        serializer = OrderItemSerializer(order_items, many=True)
         return serializer.data
 
     def get_shipping_address(self, obj):
@@ -89,6 +89,6 @@ class OrderSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         user = obj.user
         serializer = UserSerializer(user, many=False)
-        return serializer
+        return serializer.data
 
     # Good explanation for all this in 5. Order View & URL at 19:30

@@ -33,7 +33,7 @@ def add_order_items(request):
             order=order,
             address=data['shippingAddress']['address'],
             city=data['shippingAddress']['city'],
-            postal_dode=data['shippingAddress']['postalCode'],
+            postcode=data['shippingAddress']['postalCode'],
             country=data['shippingAddress']['country'],
         )
 
@@ -41,7 +41,7 @@ def add_order_items(request):
         for i in order_items:
             product = Product.objects.get(_id=i['product'])
 
-            item = OrderItem.object.create(
+            item = OrderItem.objects.create(
                 product=product,
                 order=order,
                 name=product.name,
@@ -56,3 +56,19 @@ def add_order_items(request):
 
     serializer = OrderSerializer(order, many=False)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_order_by_id(request, pk):
+
+    user = request.user
+
+    try:
+        order = Order.object.get(_id=pk)
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            return Response({'detail': 'Not authorized to view order'}, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)

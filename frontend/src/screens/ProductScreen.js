@@ -115,7 +115,7 @@ function ProductScreen({ match, history }) { // history is included in the props
                     onClick={addToCartHander} // We dont call the function because then it would be called every time the components renders and we dont want that
                     className="btn-block"
                     type="button"
-                    disabled={product.count_in_stock == 0}
+                    disabled={product.count_in_stock <= 0}
                   >
                     {product.count_in_stock > 0 ? "Add to Cart" : "Sold Out"}
                   </Button>
