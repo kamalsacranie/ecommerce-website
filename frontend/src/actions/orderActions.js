@@ -7,6 +7,11 @@ import {
     ORDER_DETAILS_REQUEST,
     ORDER_DETAILS_SUCCESS,
     ORDER_DETAILS_FAIL,
+
+    ORDER_PAY_REQUEST,
+    ORDER_PAY_SUCCESS,
+    ORDER_PAY_FAIL,
+    ORDER_PAY_RESET,
 } from '../constants/orderConstants'
 
 import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
@@ -81,6 +86,45 @@ export const createOrderDetails = (id) => async (dispatch, getState) => {
 
     const { data } = await axios.get(
       `/api/orders/${id}/`,
+      config,
+    );
+    console.log(data)
+    dispatch({
+      type: ORDER_DETAILS_SUCCESS,
+      payload: data,
+    });
+
+  } catch (error) {
+    dispatch({
+      type: ORDER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
+
+  try {
+    dispatch({
+      type: ORDER_PAY_REQUEST,
+    });
+
+    const { 
+      userLogin: { userInfo }
+     } = getState()
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}` // grabbing our token from userInfo and allowing us to authorise
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/orders/${id}/pay/`,
       config,
     );
     console.log(data)
