@@ -44,14 +44,14 @@ export const orderDetailsReducer = (state={
     orderItems: [],
     shippingAddress: {}
 }, action) => {
-
+    
     switch (action.type) {
         case ORDER_DETAILS_REQUEST:
             return {
                 ...state,
                 loading: true,
             }
-
+        
         case ORDER_DETAILS_SUCCESS:
             return { 
                 loading: false,

@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from base.models import Product, Order, OrderItem, ShippingAddress
 from base.serializers import OrderSerializer
 from rest_framework import status
+from datetime import datetime
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -27,15 +28,18 @@ def add_order_items(request):
             shipping_price=data['shippingPrice'],
             total_price=data['totalPrice']
         )
+        order.save()
 
         # (2) Create shipping address
-        shipping = ShippingAddress.objects.create(
+        shipping_address = ShippingAddress.objects.create(
             order=order,
             address=data['shippingAddress']['address'],
             city=data['shippingAddress']['city'],
             postcode=data['shippingAddress']['postalCode'],
             country=data['shippingAddress']['country'],
         )
+        shipping_address.save()
+
 
         # (3) Create order items and set order to order_item relationship
         for i in order_items:
@@ -64,7 +68,7 @@ def get_order_by_id(request, pk):
     user = request.user
 
     try:
-        order = Order.object.get(_id=pk)
+        order = Order.objects.get(_id=pk)
         if user.is_staff or order.user == user:
             serializer = OrderSerializer(order, many=False)
             return Response(serializer.data)
@@ -72,3 +76,14 @@ def get_order_by_id(request, pk):
             return Response({'detail': 'Not authorized to view order'}, status=status.HTTP_400_BAD_REQUEST)
     except:
         return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_order_to_paid(request, pk):
+    order = Order.objects.get(_id=pk)
+
+    order.is_paid = True
+    order.paid_at = datetime.now()
+    order.save()
+
+    return Response('Order paid')

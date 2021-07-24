@@ -83,7 +83,7 @@ export const createOrderDetails = (id) => async (dispatch, getState) => {
       `/api/orders/${id}/`,
       config,
     );
-
+    console.log(data)
     dispatch({
       type: ORDER_DETAILS_SUCCESS,
       payload: data,

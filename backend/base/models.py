@@ -82,4 +82,4 @@ class ShippingAddress(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self) -> str:
-        return str(self.address)
+        return str(f'{self.order}, {self.address}')

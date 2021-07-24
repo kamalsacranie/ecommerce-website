@@ -80,13 +80,14 @@ class OrderSerializer(serializers.ModelSerializer):
         return serializer.data
 
     def get_shipping_address(self, obj):
-        try:
+        # try:
             address = ShippingAddressSerializer(
-                obj.shipping_address, many=False
+                obj.shippingaddress, many=False # why the FUCK is this not either snake nor camel case wtf
             ).data
-        except:
-            address = False
-        return address
+        # except:
+        #     print(obj)
+        #     address = False
+            return address
 
     def get_user(self, obj):
         user = obj.user
