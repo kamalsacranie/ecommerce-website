@@ -10,10 +10,12 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { PayPalButton } from 'react-paypal-button-v2'
 import FormContainer from "../components/FormContainer";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { createOrderDetails } from '../actions/orderActions'
+import { createOrderDetails, payOrder } from '../actions/orderActions'
+import { ORDER_PAY_REQUEST, ORDER_PAY_RESET } from '../constants/orderConstants'
 
 // should just follow the same naming convention wherever but too late now
 
@@ -21,21 +23,50 @@ function OrderScreen({ match }) {
   const orderId = match.params.id
   const dispatch = useDispatch()
 
+  // initially our software development kit is not ready for paypal and once we load the 
+  // script this will be set to truw
+  const [sdkReady, setSdkReady] = useState(false)
+  
   const orderDetails = useSelector(state => state.orderDetails)
   const { order, error, loading } = orderDetails
   
-  //   console.log(order)
+  const orderPay = useSelector(state => state.orderPay)
+  const { success: successPay, loading: loadingPay, } = orderDetails
+  
   if (!loading && !error) {
-      order.itemsPrice = order.order_items
-      .reduce((acc, item) => acc + item.price * item.qty, 0)
+    order.itemsPrice = order.order_items
+    .reduce((acc, item) => acc + item.price * item.qty, 0)
       .toFixed(2) // This just happens locally on this page, it doesnt update our store
     }
+
+  // Because we are using react we cant just put our script in our html like usual but we rather have to 
+  // innstall react-paypal v2 so we can have the buttons
+  const payPalId = 'AXdh4Z3YLp2dwJ_gkrgZanpy1bdq4LvPxZ68bY1r8a0wpkywdYgxaAiymoKpHrv05RUic1ryU7InvqDd'
+  const addPayPalScript = () => {
+    const script = document.createElement('script')
+    script.type = 'text/javacript'
+    script.src = `https://www.paypal.com/sdk/js?client-id=${payPalId}`
+    script.async = true
+    script.onload = () => {
+      setSdkReady(true)
+    }
+    document.body.appendChild(script)
+  }
     
     useEffect(() => {
-        if (!order || order._id !== Number(orderId)) {
+      if (!order || successPay || order._id !== Number(orderId)) {
+        dispatch({type: ORDER_PAY_RESET})
         dispatch(createOrderDetails(orderId))
+    } else if (!order.isPaid) {
+      !window.paypal ? addPayPalScript() : setSdkReady(true)
     }
-  }, [order, orderId]) // Just found out that dependencies are what causes this useEffect to fire when one of the values of the dependency changes
+  }, [dispatch, order, orderId, successPay]) // Just found out that dependencies are what causes this useEffect to fire when one of the values of the dependency changes
+
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult))
+  }
+
+
   return loading ? (
       <Loader />
   ) : error ? (
@@ -63,7 +94,7 @@ function OrderScreen({ match }) {
                 <Message variant='warning'>Not Delivered</Message>
               )}
             </ListGroup.Item>
-
+ 
             <ListGroup.Item>
               <h2>Payment Method</h2>
 
@@ -115,6 +146,7 @@ function OrderScreen({ match }) {
             </ListGroup.Item>
           </ListGroup>
         </Col>
+        <Col md={4}>
           <Card>
             <ListGroup variant='flush'>
               <ListGroup.Item>
@@ -149,9 +181,25 @@ function OrderScreen({ match }) {
                 </Row>
               </ListGroup.Item>
 
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+
+                  {sdkReady ? (
+                    <Loader />
+                  ) : (
+                    // loading in our paypal button if its ready
+                    <PayPalButton 
+                      amount={order.totalPrice}
+                      onSuccess={successPaymentHandler}
+                    />
+                  )}
+                </ListGroup.Item>
+              )}
+
             </ListGroup>
           </Card>
-        <Col md={4}></Col>
+        </Col>
       </Row>
     </div>
   );
