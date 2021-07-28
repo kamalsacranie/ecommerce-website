@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { listUsers } from '../actions/userActions'
+import { listUsers, deleteUser } from '../actions/userActions'
 
 
 function UserListScreen({ history }) {
@@ -17,6 +17,11 @@ function UserListScreen({ history }) {
 
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
+
+    // When we delete a user we want to update our listUsers so we need to use this in
+    // our useEffect
+    const userDelete = useSelector(state => state.userDelete)
+    const { success: successDelete } = userDelete
     
     // We dont want to dispatch this to state unelss we are an admin
     // Hence we add in condition to prevent it. We redirect user to home
@@ -26,10 +31,14 @@ function UserListScreen({ history }) {
         } else {
             history.push('/login')
         }
-    }, [dispatch, history])
+    }, [dispatch, history, successDelete, userInfo]) // Hence this dispatches when successDelete value changes which
+    // update our list of users by dispatching listUsers to state and then reach pulls them in in th JSX
 
     const deleteHandler = (id) => {
-        console.log('DELETE:', id)
+
+        if (window.confirm('Are you sure you want to delete this user?')){
+            dispatch(deleteUser(id))
+        }
     }
 
     return (

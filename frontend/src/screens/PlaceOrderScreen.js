@@ -41,7 +41,7 @@ function PlaceOrderScreen({ history }) {
       history.push(`/order/${order._id}`)
       dispatch({type: ORDER_CREATE_RESET})
     }
-  }, [success, history]) // Just found out that dependencies are what causes this useEffect to fire when one of the values of the dependency changes
+  }, [success, history, order, dispatch]) // Just found out that dependencies are what causes this useEffect to fire when one of the values of the dependency changes
 
   const placeOrder = () => {
     dispatch(createOrder({

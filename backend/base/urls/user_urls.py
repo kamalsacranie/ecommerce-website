@@ -7,4 +7,7 @@ urlpatterns = [
     path('profile/update/', views.update_user_profile, name='user-profile-update'),
     path('register/', views.register_user, name='register'),
     path('', views.get_users, name='user'),
+    
+    # Path to delete a user using their id/pk
+    path('delete/<str:pk>/', views.delete_user, name='user-delete'),
 ]
