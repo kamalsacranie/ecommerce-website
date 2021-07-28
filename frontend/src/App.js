@@ -16,6 +16,7 @@ import ShippingScreen from './screens/ShippingScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
+import UserListScreen from './screens/UserListScreen';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           {/* Adding :id here in the path makes it dynamic. not sure how this bit works */}
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />  {/* Putting questionmark after id makes it optional meaning we can just go to /cart */}
+          <Route path='/admin/userlist' component={UserListScreen} />  {/* Putting questionmark after id makes it optional meaning we can just go to /cart */}
         </Container>
       </main>
       <Footer />
