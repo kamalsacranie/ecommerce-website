@@ -17,14 +17,14 @@ import Loader from "../components/Loader";
 import { createOrderDetails, payOrder } from '../actions/orderActions'
 import { ORDER_PAY_REQUEST, ORDER_PAY_RESET } from '../constants/orderConstants'
 
-// should just follow the same naming convention wherever but too late now
 
+// should just follow the same naming convention wherever but too late now
 function OrderScreen({ match }) {
   const orderId = match.params.id
   const dispatch = useDispatch()
 
   // initially our software development kit is not ready for paypal and once we load the 
-  // script this will be set to truw
+  // script this will be set to truw and then run the script to bring in the buttons
   const [sdkReady, setSdkReady] = useState(false)
   
   const orderDetails = useSelector(state => state.orderDetails)
@@ -43,9 +43,11 @@ function OrderScreen({ match }) {
   // innstall react-paypal v2 so we can have the buttons
   const payPalId = 'AXdh4Z3YLp2dwJ_gkrgZanpy1bdq4LvPxZ68bY1r8a0wpkywdYgxaAiymoKpHrv05RUic1ryU7InvqDd'
   const addPayPalScript = () => {
+    // Creating a script tag in our HTML page
     const script = document.createElement('script')
+    // Setting the args within a HTML tag
     script.type = 'text/javacript'
-    script.src = `https://www.paypal.com/sdk/js?client-id=${payPalId}`
+    script.src = `https://www.paypal.com/sdk/js?client-id=${payPalId}&currency=GBP`
     script.async = true
     script.onload = () => {
       setSdkReady(true)
@@ -57,8 +59,12 @@ function OrderScreen({ match }) {
       if (!order || successPay || order._id !== Number(orderId)) {
         dispatch({type: ORDER_PAY_RESET})
         dispatch(createOrderDetails(orderId))
-    } else if (!order.isPaid) {
-      !window.paypal ? addPayPalScript() : setSdkReady(true)
+    } else if (!order.is_paid) {
+      if (!window.paypal) {
+        addPayPalScript()
+      } else {
+        setSdkReady(true)
+      }
     }
   }, [dispatch, order, orderId, successPay]) // Just found out that dependencies are what causes this useEffect to fire when one of the values of the dependency changes
 
@@ -181,16 +187,16 @@ function OrderScreen({ match }) {
                 </Row>
               </ListGroup.Item>
 
-              {!order.isPaid && (
+              {!order.is_paid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
 
-                  {sdkReady ? (
+                  {!sdkReady ? (
                     <Loader />
                   ) : (
                     // loading in our paypal button if its ready
                     <PayPalButton 
-                      amount={order.totalPrice}
+                      amount={order.total_price}
                       onSuccess={successPaymentHandler}
                     />
                   )}
