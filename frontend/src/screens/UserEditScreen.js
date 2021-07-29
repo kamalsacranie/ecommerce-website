@@ -6,36 +6,56 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
-import { getUserDetails } from "../actions/userActions";
+import { getUserDetails, updateUser, } from "../actions/userActions";
+import { USER_UPDATE_RESET, USER_UPDATE_SUCCESS } from '../constants/userConstants'
 
 function EditUserScreen({ match, history }) {
   const userId = match.params.id;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   
   const dispatch = useDispatch(); // thing dispatch is like. you dispatch the new info to your state
   
   const userDetails = useSelector((state) => state.userDetails); // This is us getting the userLogin from our stile which is stored in store.js
   const { loading, error, user } = userDetails;
   
-  const [isAdmin, setIsAdmin] = useState(false);
+  const userUpdate = useSelector((state) => state.userUpdate);
+  // Suffixing these with Update so that we dont get confused with our other laoding error and user vars defined above
+  const { 
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = userUpdate;
 
   useEffect(() => {
-      if (!user) {
-          history.push('')
+
+    if (!user) {
+      history.push('')
+    } else {
+      if (successUpdate) {
+        dispatch({type: USER_UPDATE_RESET})
+        history.push('/admin/userlist')
+      } else {
+        setName(user.name)
+        setEmail(user.email)
+        setIsAdmin(user.is_admin)
       }
-      else if (!user.name || user._id !== Number(userId)) {
+  
+      if (!user.name || user._id !== Number(userId)) {
           dispatch(getUserDetails(userId))
       } else {
-          setName(user.name)
-          setEmail(user.email)
-          setIsAdmin(user.is_admin)
+        setName(user.name)
+        setEmail(user.email)
+        setIsAdmin(user.is_admin)
       }
-  }, [user, userId]);
+    }
+  }, [user, userId, successUpdate, history]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(updateUser({_id: user._id, name, email, isAdmin}))
   };
 
   return (
@@ -43,6 +63,8 @@ function EditUserScreen({ match, history }) {
       <Link to="/admin/userlist">Go Back</Link>
       <FormContainer>
         <h1>Edit User</h1>
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant='danger'>{error}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -70,7 +92,7 @@ function EditUserScreen({ match, history }) {
             </Form.Group>
 
             <Form.Group controlId="isadmin">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Admin Status</Form.Label>
               <Form.Check
                 type="checkbox"
                 label="Is Admin"
