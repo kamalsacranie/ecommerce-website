@@ -84,6 +84,29 @@ def get_users(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
+@api_view(['GET',])
+@permission_classes([IsAdminUser])
+def get_user_by_id(request, pk):
+    user = User.objects.get(id=pk)
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT',])
+# This wrapper stops peopel from getting a profile without a token
+@permission_classes([IsAuthenticated])
+def update_user(request, pk):
+    user = User.objects.get(id=pk)
+
+    data = request.data
+    user.first_name = data['name']
+    user.username = data['email']
+    user.email = data['email']
+    user.is_staff = data['is_admin']
+    user.save()
+
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
 # Getting our user by id/pk which we want to delete and then
 # Deleting it from our database
 @api_view(['DELETE',])
