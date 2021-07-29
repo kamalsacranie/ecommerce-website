@@ -17,6 +17,7 @@ import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import UserListScreen from './screens/UserListScreen';
+import UserEditScreen from './screens/UserEditScreen';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />  {/* Putting questionmark after id makes it optional meaning we can just go to /cart */}
           <Route path='/admin/userlist' component={UserListScreen} />  {/* Putting questionmark after id makes it optional meaning we can just go to /cart */}
+          <Route path='/admin/user/:id/edit' component={UserEditScreen} />  {/* Putting questionmark after id makes it optional meaning we can just go to /cart */}
         </Container>
       </main>
       <Footer />
