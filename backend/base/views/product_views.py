@@ -64,6 +64,8 @@ def update_product(request, pk):
 @permission_classes([IsAuthenticated])
 def delete_product(request, pk):
     product = Product.objects.get(_id=pk)
+    # Removing product associated image
+    remove(product.image.path)
     product.delete()
     return Response('Product Deleted')
 
