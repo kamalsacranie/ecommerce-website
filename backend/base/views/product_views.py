@@ -40,7 +40,7 @@ def create_product(request):
 
 @api_view(['PUT',])
 @permission_classes([IsAuthenticated])
-def get_product(request, pk):
+def update_product(request, pk):
     data = request.data
     product = Product.objects.get(_id=pk)
 

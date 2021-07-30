@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux"
 
 import Loader from "../components/Loader"
 import Message from "../components/Message"
-import { listProducts, deleteProduct } from "../actions/productActions"
+import { listProducts, deleteProduct, createProduct } from "../actions/productActions"
+import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
 function ProductListScreen({ history, match }) {
   const dispatch = useDispatch()
@@ -22,17 +23,38 @@ function ProductListScreen({ history, match }) {
     success: successDelete,
   } = productDelete
 
+  const productCreate = useSelector(state => state.productCreate)
+  const {
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+    product: createdProduct,
+  } = productCreate
+
   const userLogin = useSelector(state => state.userLogin)
   const { userInfo } = userLogin
 
   useEffect(() => {
-    if (userInfo && userInfo.is_admin) {
-      dispatch(listProducts())
-    } else {
+    dispatch({type: PRODUCT_CREATE_RESET}) // look into the object type thing here in docs
+
+    if (!userInfo.is_admin) {
       history.push("/login")
     }
-  }, [dispatch, history, userInfo, successDelete]) // Hence this dispatches when successDelete value changes which
-  // update our list of users by dispatching listUsers to state and then reach pulls them in in th JSX
+
+    if (successCreate) {
+      history.push(`/admin/product/${createProduct._id}/edit`)
+    } else {
+      dispatch(listProducts())
+    }
+
+  }, [
+    dispatch, 
+    history, 
+    userInfo, 
+    successDelete,
+    successCreate,
+    createdProduct,
+  ])
 
   const deleteHandler = id => {
     if (window.confirm("Are you sure you want to delete this products?")) {
@@ -41,7 +63,7 @@ function ProductListScreen({ history, match }) {
   }
 
   const createProductHandler = products => {
-    //
+    dispatch(createProduct())
   }
 
   return (
@@ -50,8 +72,8 @@ function ProductListScreen({ history, match }) {
         <Col>
           <h1>Products</h1>
         </Col>
-        <Col className="text-right">
-          <Button className="my-3" onClick={createProductHandler}>
+        <Col className="text-right d-inline-flex">
+          <Button className="my-3 ms-auto" onClick={createProductHandler}>
             <i className="fas fa-plus"></i> Create Product
           </Button>
         </Col>
@@ -59,6 +81,9 @@ function ProductListScreen({ history, match }) {
 
       {loadingDelete && <Loader />}
       {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+
+      {loadingCreate && <Loader />}
+      {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
 
       {loading ? (
         <Loader />
