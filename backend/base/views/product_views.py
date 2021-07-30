@@ -38,6 +38,26 @@ def create_product(request):
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
 
+@api_view(['PUT',])
+@permission_classes([IsAuthenticated])
+def get_product(request, pk):
+    data = request.data
+    product = Product.objects.get(_id=pk)
+
+    product.name = data['name']
+    product.price = data['price']
+    product.brand = data['brand']
+    product.count_in_stock = data['countInStock'] # This is camelCase becasue we will name it as such in the form in the frontend
+    # we are jsut following these naming conventions for this project bacuase I realised its better to not mix and match
+    # slightly too late
+    product.description = data['description']
+    product.category = data['category']
+
+    product.save()
+
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
 @api_view(['DELETE',])
 @permission_classes([IsAuthenticated])
 def delete_product(request, pk):
