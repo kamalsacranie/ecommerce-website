@@ -44,12 +44,15 @@ def update_product(request, pk):
     data = request.data
     product = Product.objects.get(_id=pk)
 
+    print(data)
     product.name = data['name']
     product.price = data['price']
     product.brand = data['brand']
-    product.count_in_stock = data['countInStock'] # This is camelCase becasue we will name it as such in the form in the frontend
+    product.count_in_stock = data['count_in_stock'] # This is camelCase becasue we will name it as such in the form in the frontend
     # we are jsut following these naming conventions for this project bacuase I realised its better to not mix and match
-    # slightly too late
+    # slightly too late. Figured out that it is named snake_case in the state and camelCase was assigning no value which meant
+    # that React was throwing a message saying that one of our form elements' state wasnt being controlled properly becasue
+    # on load the form element would conflict with the react state which was empty or some such.
     product.description = data['description']
     product.category = data['category']
 

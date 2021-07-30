@@ -35,14 +35,14 @@ function ProductListScreen({ history, match }) {
   const { userInfo } = userLogin
 
   useEffect(() => {
-    dispatch({type: PRODUCT_CREATE_RESET}) // look into the object type thing here in docs
+    // dispatch({type: PRODUCT_CREATE_RESET}) // look into the object type thing here in docs
 
     if (!userInfo.is_admin) {
       history.push("/login")
     }
 
     if (successCreate) {
-      history.push(`/admin/product/${createProduct._id}/edit`)
+      history.push(`/admin/product/${createdProduct._id}/edit`)
     } else {
       dispatch(listProducts())
     }
@@ -62,7 +62,7 @@ function ProductListScreen({ history, match }) {
     }
   }
 
-  const createProductHandler = products => {
+  const createProductHandler = () => {
     dispatch(createProduct())
   }
 
