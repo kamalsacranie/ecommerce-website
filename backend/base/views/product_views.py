@@ -73,7 +73,6 @@ def delete_product(request, pk):
     return Response('Product Deleted')
 
 @api_view(['POST',])
-# @permission_classes([IsAuthenticated])
 def upload_image(request):
     data = request.data
 

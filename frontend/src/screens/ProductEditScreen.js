@@ -30,9 +30,6 @@ function ProductUserScreen({ match, history }) {
   const productUpdate = useSelector(state => state.productUpdate)
   const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate
 
-  const { userInfo } = useSelector(state => state.userLogin)
-  // console.log(userInfo.token)
-
   useEffect(() => {
 
     if (successUpdate) {
@@ -83,7 +80,6 @@ function ProductUserScreen({ match, history }) {
       const config = {
         header: {
           "Content-type": "multipart/form-data", // this is what lets us send the image with our post request
-          Authorization: `Bearer ${userInfo.token}`
         }
       }
 
