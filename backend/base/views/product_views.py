@@ -65,19 +65,27 @@ def update_product(request, pk):
 def delete_product(request, pk):
     product = Product.objects.get(_id=pk)
     # Removing product associated image
-    remove(product.image.path)
+    try:
+        remove(product.image.path)
+    except:
+        pass
     product.delete()
     return Response('Product Deleted')
 
 @api_view(['POST',])
+# @permission_classes([IsAuthenticated])
 def upload_image(request):
     data = request.data
 
     product_id = data['product_id']
     product = Product.objects.get(_id=product_id)
 
-    # This is a nice clean way to remove the previous image path and not have duplicates for one product
-    remove(product.image.path)
+    # This is a way to remove previous image files ascosiated with a product
+    # pretty sloppy way to get round the fact that we dont want to delete our placeholder image
+    try:
+        remove(product.image.path)
+    except:
+        pass
     product.image = request.FILES.get('image') # we are going to using "multi-part form data" to send this image
     product.save()
 

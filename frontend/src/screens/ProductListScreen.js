@@ -97,6 +97,7 @@ function ProductListScreen({ history, match }) {
               <th>ID</th>
               <th>NAME</th>
               <th>PRICE</th>
+              <th>IN STOCK</th>
               <th>CATEGORY</th>
               <th>BRAND</th>
               <th></th>
@@ -109,6 +110,7 @@ function ProductListScreen({ history, match }) {
                 <td>{product._id}</td>
                 <td>{product.name}</td>
                 <td>${product.price}</td>
+                <td>{product.count_in_stock}</td>
                 <td>{product.category}</td>
                 <td>{product.brand}</td>
 
