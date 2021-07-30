@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { Form, Button } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
+import axios from 'axios'
 
 import Loader from "../components/Loader"
 import Message from "../components/Message"
@@ -19,6 +20,7 @@ function ProductUserScreen({ match, history }) {
   const [category, setCategory] = useState("")
   const [countInStock, setCountInStock] = useState(0)
   const [description, setDescription] = useState("")
+  const [uploading, setUploading] = useState(false)
 
   const dispatch = useDispatch() // thing dispatch is like. you dispatch the new info to your state
 
@@ -61,6 +63,39 @@ function ProductUserScreen({ match, history }) {
       countInStock,
       description,
     }))
+  }
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0]
+    console.log(file)
+    const formData = new FormData()
+
+    formData.append('image', file) // This is how we send it to the backend. We create a new key value pair to send with the form
+    formData.append('product_id', productId) // we use snake case here because this is how we referenced it in the backend
+
+    setUploading(true) // changing our react upload state to true to dispaly our loader
+
+    try {
+      // We need to create a custom post request to get our files? I think?
+      const config ={
+        header: {
+          "content-type": "multipart/form-data", // this is what lets us send the image with our post request
+        }
+      }
+
+      const { data } = await axios.post(
+        '/api/products/upload/',
+        formData,
+        config
+      )
+
+      setImage(data) // gives us the new image path
+      setUploading(false)
+
+    } catch (error) {
+      setUploading(false)
+    }
+
   }
 
   return (
@@ -108,6 +143,17 @@ function ProductUserScreen({ match, history }) {
                 value={image}
                 onChange={e => setImage(e.target.value)}
               ></Form.Control>
+
+              <Form.File
+                className="py-3"
+                id="image-file"
+                custom
+                onChange={uploadFileHandler}
+              >
+              </Form.File>
+
+              {uploading && <Loader />}
+
             </Form.Group>
 
             <Form.Group controlId="brand">

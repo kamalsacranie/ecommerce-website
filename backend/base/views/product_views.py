@@ -1,3 +1,4 @@
+from os import remove
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -43,20 +44,6 @@ def create_product(request):
 def update_product(request, pk):
     data = request.data
     product = Product.objects.get(_id=pk)
-    print(f'''
-    
-
-
-
-
-    {data}
-
-
-
-
-
-    ''')
-    print(data)
     product.name = data['name']
     product.price = data['price']
     product.brand = data['brand']
@@ -85,8 +72,10 @@ def upload_image(request):
     data = request.data
 
     product_id = data['product_id']
-    product = Product.object.get(_id=product_id)
+    product = Product.objects.get(_id=product_id)
 
+    # This is a nice clean way to remove the previous image path and not have duplicates for one product
+    remove(product.image.path)
     product.image = request.FILES.get('image') # we are going to using "multi-part form data" to send this image
     product.save()
 
