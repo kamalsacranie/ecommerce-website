@@ -79,3 +79,15 @@ def delete_product(request, pk):
     product = Product.objects.get(_id=pk)
     product.delete()
     return Response('Product Deleted')
+
+@api_view(['POST',])
+def upload_image(request):
+    data = request.data
+
+    product_id = data['product_id']
+    product = Product.object.get(_id=product_id)
+
+    product.image = request.FILES.get('image') # we are going to using "multi-part form data" to send this image
+    product.save()
+
+    return Response('Image was uploaded')
