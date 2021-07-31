@@ -91,8 +91,8 @@ def upload_image(request):
     return Response('Image was uploaded')
 
 @api_view(['POST'])
-@permission_classes[IsAuthenticated]
-def createProductReveiw(request, pk):
+@permission_classes([IsAuthenticated])
+def create_product_review(request, pk):
     user = request.user
     product = Product.objects.get(_id=pk)
     data = request.data
