@@ -8,15 +8,17 @@ import Product from "../components/Product";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
-function HomeScreen() {
+function HomeScreen({ history }) {
   // here we are using our redux action
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
   const { error, loading, products } = productList;
 
+  let keyword = history.location.search // grabbing the search param in history. Is it built in?? must be
+
   useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+    dispatch(listProducts(keyword));
+  }, [dispatch, keyword]);
 
   return (
     <div>

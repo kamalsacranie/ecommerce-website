@@ -6,6 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 import React from 'react';
 
+import SearchBox from './SearchBox'
 import { logout } from '../actions/userActions'
 
 // Creating our header as a componant that react can use
@@ -31,6 +32,7 @@ function Header() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     
                     <Navbar.Collapse id="basic-navbar-nav">
+                        <SearchBox />
                         <Nav className="mr-auto">
 
                             <LinkContainer to='/cart'>

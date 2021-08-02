@@ -12,7 +12,14 @@ from rest_framework import status
 
 @api_view(['GET',])
 def get_products(request):
-    products = Product.objects.all()
+
+    # Automatically pulls search keyword from our url    
+    if request.query_params.get('keyword') == None:
+        query = ''
+    else:
+        query = request.query_params.get('keyword')
+
+    products = Product.objects.filter(name__icontains=query) # if the title of the product contains any chars in the query we return it also the i denotes case insensitivity
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
@@ -102,13 +109,13 @@ def create_product_review(request, pk):
     # Review laready exists
     if already_exists:
         content = {
-            'details': 'Product already reviewed'
+            'detail': 'Product already reviewed'
         }
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
     # Didn't provide a rating
     elif data['rating'] == 0:
         content = {
-            'details': 'Please select a rating'
+            'detail': 'Please select a rating'
         }
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
     # Create review

@@ -48,7 +48,7 @@ class UserSerializerWithToken(UserSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = Review
         fields = '__all__' # returning all info for our Product model
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -66,7 +66,7 @@ class ProductSerializer(serializers.ModelSerializer):
         # This allows us to nest all the information from the reviews model
         # In the reponse of our api along with the product details
         serializer = ReviewSerializer(reviews, many=True)
-        return(serializer)
+        return(serializer.data)
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
     class Meta:
